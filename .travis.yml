@@ -15,7 +15,6 @@ services: docker
 
 env:
   matrix:
-    fast_finish: true
   - INSTANCE=config-centos-6
   - INSTANCE=config-centos-7
   - INSTANCE=config-ubuntu-1204
