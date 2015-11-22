@@ -14,6 +14,9 @@ driver_config:
 provisioner:
   name: chef_zero
 
+verifier:
+  name: inspec
+
 platforms:
 - name: centos-5.8
   driver:
@@ -23,6 +26,7 @@ platforms:
     image: centos-5-8-x64
     region: <%= ENV['DIGITALOCEAN_REGION'] %>
     ssh_key_ids: <%= ENV['DIGITALOCEAN_SSH_KEYS'] %>
+  transport:
     ssh_key: <%= ENV['DIGITALOCEAN_SSH_KEY_PATH'] %>
 
 - name: centos-6.5
@@ -33,6 +37,7 @@ platforms:
     image: centos-6-5-x64
     region: <%= ENV['DIGITALOCEAN_REGION'] %>
     ssh_key_ids: <%= ENV['DIGITALOCEAN_SSH_KEYS'] %>
+  transport:
     ssh_key: <%= ENV['DIGITALOCEAN_SSH_KEY_PATH'] %>
 
 - name: centos-7.0
@@ -43,6 +48,7 @@ platforms:
     image: centos-7-0-x64
     region: <%= ENV['DIGITALOCEAN_REGION'] %>
     ssh_key_ids: <%= ENV['DIGITALOCEAN_SSH_KEYS'] %>
+  transport:
     ssh_key: <%= ENV['DIGITALOCEAN_SSH_KEY_PATH'] %>
 
 - name: amazon-2014.09
@@ -89,6 +95,7 @@ platforms:
     image: fedora-21-x64
     region: <%= ENV['DIGITALOCEAN_REGION'] %>
     ssh_key_ids: <%= ENV['DIGITALOCEAN_SSH_KEYS'] %>
+  transport:
     ssh_key: <%= ENV['DIGITALOCEAN_SSH_KEY_PATH'] %>
   run_list:
   - recipe[selinux::disabled]
@@ -109,6 +116,7 @@ platforms:
     image: debian-7-0-x64
     region: <%= ENV['DIGITALOCEAN_REGION'] %>
     ssh_key_ids: <%= ENV['DIGITALOCEAN_SSH_KEYS'] %>
+  transport:
     ssh_key: <%= ENV['DIGITALOCEAN_SSH_KEY_PATH'] %>
   run_list:
   - recipe[apt]
@@ -133,6 +141,7 @@ platforms:
     image: ubuntu-12-04-x64
     region: <%= ENV['DIGITALOCEAN_REGION'] %>
     ssh_key_ids: <%= ENV['DIGITALOCEAN_SSH_KEYS'] %>
+  transport:
     ssh_key: <%= ENV['DIGITALOCEAN_SSH_KEY_PATH'] %>
   run_list:
   - recipe[apt]
@@ -145,6 +154,7 @@ platforms:
     image: ubuntu-14-04-x64
     region: <%= ENV['DIGITALOCEAN_REGION'] %>
     ssh_key_ids: <%= ENV['DIGITALOCEAN_SSH_KEYS'] %>
+  transport:
     ssh_key: <%= ENV['DIGITALOCEAN_SSH_KEY_PATH'] %>
   run_list:
   - recipe[apt]
@@ -174,6 +184,48 @@ platforms:
 #     chef_omnibus_url: https://raw.github.com/test-kitchen/kitchen-joyent/master/scripts/install-smartos.sh
 
 suites:
+  #
+  # config
+  #
+  - name: config
+    run_list:
+    - recipe[httpd_config_test]
+
+  #
+  # modules
+  #
+  - name: module22
+    run_list:
+    - recipe[httpd_module_test]
+    includes: [
+      'amazon-2014.03',
+      'centos-5.8',
+      'centos-6.5',
+      'debian-7.0',
+      'omnios-151006',
+      'smartos-13.4.0',
+      'ubuntu-12.04'
+    ]
+    attributes:
+      httpd:
+        version: '2.2'
+
+  - name: module24
+    run_list:
+    - recipe[httpd_module_test]
+    includes: [
+      'amazon-2015.03',
+      'centos-7.0',
+      'fedora-20',
+      'fedora-21',
+      'omnios-151006',
+      'smartos-13.4.0',
+      'ubuntu-14.04',
+    ]
+    attributes:
+      httpd:
+        version: '2.4'
+
   #
   # service22-single
   #
@@ -276,48 +328,6 @@ suites:
         startservers: '20'
         timeout: '1234'
         version: '2.4'
-
-  #
-  # modules
-  #
-  - name: module22
-    run_list:
-    - recipe[httpd_module_test]
-    includes: [
-      'amazon-2014.03',
-      'centos-5.8',
-      'centos-6.5',
-      'debian-7.0',
-      'omnios-151006',
-      'smartos-13.4.0',
-      'ubuntu-12.04'
-    ]
-    attributes:
-      httpd:
-        version: '2.2'
-
-  - name: module24
-    run_list:
-    - recipe[httpd_module_test]
-    includes: [
-      'amazon-2015.03',
-      'centos-7.0',
-      'fedora-20',
-      'fedora-21',
-      'omnios-151006',
-      'smartos-13.4.0',
-      'ubuntu-14.04',
-    ]
-    attributes:
-      httpd:
-        version: '2.4'
-
-  #
-  # config
-  #
-  - name: config
-    run_list:
-    - recipe[httpd_config_test]
 
   #
   # hello_world_test
