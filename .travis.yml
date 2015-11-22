@@ -39,7 +39,7 @@ env:
   - INSTANCE=service24-multi-centos-7
   - INSTANCE=service24-multi-fedora-21
   - INSTANCE=service24-multi-ubuntu-1404
-    fast_finish: true
+  fast_finish: true
 
 before_script:
   - sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables -N DOCKER )
