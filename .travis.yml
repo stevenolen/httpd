@@ -9,7 +9,7 @@ addons:
     packages:
       - chefdk
 
-install: echo "skip bundle install.."
+install: echo "skip bundle install"
 
 services: docker
 
