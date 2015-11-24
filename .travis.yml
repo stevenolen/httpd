@@ -55,5 +55,7 @@ script:
   - /opt/chefdk/embedded/bin/rspec
   - KITCHEN_LOCAL_YAML=.kitchen.dokken.yml kitchen verify ${INSTANCE}
 
-after_failure:
+after_script:
+  - docker images
+  - docker ps -a
   - cat .kitchen/logs/kitchen.log
